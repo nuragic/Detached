@@ -12,17 +12,16 @@ class Detached {
     public function __construct($dude) {
         try {
             $this->_html = file_get_html("http://www.linkedin.com/in/$dude");
-            ini_set('user_agent', 'Detached/0.1');
         } catch (Exception $e) {
-            throw new Exception("Error loading the current URL.");
+            throw new Exception("Error loading URL.");
         }
     }
 
     public function getExperience() {
 
-        $exp_wrapper = $this->_html->find('div#profile-experience', 0);
+        $wrapper = $this->_html->find('div#profile-experience', 0);
 
-        foreach($exp_wrapper->find('div.position') as $position) {
+        foreach($wrapper->find('div.position') as $position) {
 
             $item['position']           = trim($position->find('div.postitle h3 .title', 0)->plaintext);
             $item['company']            = trim($position->find('div.postitle h4 .summary', 0)->plaintext);
@@ -32,35 +31,46 @@ class Detached {
             $item['period']['location'] = trim($position->find('p.period .location', 0)->plaintext);
             $item['description']        = trim($position->find('p.description', 0)->plaintext);
 
-            $experience[] = $item;
+            $this->data['experience'][] = $item;
         }
-
-        $this->data['experience'] = $experience;
 
         return $this->data['experience'];
     }
 
     public function getLanguages() {
 
-        $exp_wrapper = $this->_html->find('div#profile-languages', 0);
+        $wrapper = $this->_html->find('div#profile-languages', 0);
 
-        foreach($exp_wrapper->find('li.language ') as $language) {
+        foreach($wrapper->find('li.language') as $language) {
 
             $item['language']    = trim($language->find('h3', 0)->plaintext);
             $item['proficiency'] = trim($language->find('.proficiency', 0)->plaintext);
 
-            $languages[] = $item;
+            $this->data['languages'][] = $item;
         }
 
-        $this->data['languages'] = $languages;
-
-        return $this->data['languages'] = $languages;
+        return $this->data['languages'];
     }
 
-     public function getAll() {
+    public function getSkills() {
+
+        $wrapper = $this->_html->find('div#profile-skills', 0);
+
+        foreach($wrapper->find('li.competency') as $skill) {
+
+            $item = trim($skill->find('a', 0)->plaintext);
+
+            $this->data['skills'][] = $item;
+        }
+
+        return $this->data['skills'];
+    }
+
+    public function getAll() {
 
         $this->getExperience();
         $this->getLanguages();
+        $this->getSkills();
 
         return $this->data;
     }
