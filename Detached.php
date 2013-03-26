@@ -26,7 +26,7 @@ class Detached {
             $item['position']           = trim($position->find('div.postitle h3 .title', 0)->plaintext);
             $item['company']            = trim($position->find('div.postitle h4 .summary', 0)->plaintext);
             $item['period']['start']    = trim($position->find('p.period .dtstart', 0)->plaintext);
-            $item['period']['end']      = trim($position->find('p.period .dtstamp', 0)->plaintext);
+            $item['period']['end']      = trim($position->find('p.period .dtstamp, p.period .dtend', 0)->plaintext);
             $item['period']['duration'] = trim($position->find('p.period .duration', 0)->plaintext);
             $item['period']['location'] = trim($position->find('p.period .location', 0)->plaintext);
             $item['description']        = trim($position->find('p.description', 0)->plaintext);
